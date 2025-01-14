@@ -44,24 +44,6 @@ namespace {
 
 namespace zorro
 {
-    void SignalHandler(int signal)
-    {
-        // Use custom signal 50 ~ 56 to change logging level at run time
-        if (signal >= 50 && signal <=56)
-        {
-            auto l_level = signal - 50;
-            if (client_)
-            {
-                SPDLOG_INFO("Set loglevel: {}", l_level);
-                spdlog::set_level((spdlog::level::level_enum)l_level);
-            }
-            else
-            {
-                config.log_level_ = l_level;
-            }
-        }
-    }
-
     ////////////////////////////////////////////////////////////////
     DLLFUNC_C int BrokerOpen(char* Name, FARPROC fpError, FARPROC fpProgress)
     {
@@ -69,8 +51,6 @@ namespace zorro
         (FARPROC&)BrokerError = fpError;
         (FARPROC&)BrokerProgress = fpProgress;
         return PLUGIN_VERSION;
-
-        global.setSingnalHandler(SignalHandler);
     }
 
     DLLFUNC_C int BrokerLogin(char* User, char* Pwd, char* Type, char* Account)
@@ -168,9 +148,9 @@ namespace zorro
         }
 
         auto top = symbol->top_.load(std::memory_order_relaxed);
-        if (global.price_type_ == 2)
+        auto last_trade = symbol->last_trade_.load(std::memory_order_relaxed);
+        if (global.price_type_.load(std::memory_order_relaxed) == 2)
         {
-            auto last_trade = symbol->last_trade_.load(std::memory_order_relaxed);
             if (!std::isnan(last_trade.price_))
             {
                 *pPrice = last_trade.price_;
@@ -179,17 +159,44 @@ namespace zorro
             {
                 *pPrice = top.ask_price_;
             }
-            if (pVolume)
-            {
-                *pVolume = last_trade.buy_volume_ + last_trade.sell_volume_;
-            }
         }
         else
         {
             *pPrice = top.ask_price_;
-            if (pVolume)
+        }
+
+        if (pVolume)
+        {
+            switch(global.vol_type_)
             {
-                *pVolume = top.bid_qty_ + top.ask_qty_;
+                case 0:
+                    if (global.price_type_.load(std::memory_order_relaxed) == 2)
+                    {
+                        *pVolume = last_trade.buy_volume_ - last_trade.sell_volume_;
+                    }
+                    else
+                    {
+                        *pVolume = top.bid_qty_ + top.ask_qty_;
+                    }
+                    break;
+                case 1:
+                    // no volume
+                    break;
+                case 2:
+                    // cumulative delta
+                    *pVolume = last_trade.buy_volume_ - last_trade.sell_volume_;
+                    break;
+                case 3:
+                    *pVolume = top.bid_qty_ + top.ask_qty_;
+                    break;
+                case 4:
+                    *pVolume = last_trade.buy_volume_ - last_trade.sell_volume_;
+                    break;
+                case 5:
+                    *pVolume = top.ask_price_;
+                    break;
+                case 6:
+                    *pVolume = top.bid_price_;
             }
         }
 
@@ -421,13 +428,13 @@ namespace zorro
             return parameter;
 
         case GET_PRICETYPE:
-            return global.price_type_;
+            return global.price_type_.load(std::memory_order_relaxed);
 
         case SET_PRICETYPE:
         {
-            global.price_type_ = (int)parameter;
-            SPDLOG_TRACE("SET_PRICETYPE: {}", global.price_type_);
-            return global.price_type_;
+            global.price_type_.store((int)parameter, std::memory_order_release);
+            SPDLOG_TRACE("SET_PRICETYPE: {}", (int)parameter);
+            return parameter;
         }
 
         case SET_AMOUNT:
@@ -500,10 +507,25 @@ namespace zorro
         }
 
         case GET_VOLTYPE:
-            return global.price_type_ == 2 ? 4 : 3;
+        {
+            auto rt = global.price_type_.load(std::memory_order_relaxed) == 2 ? 4 : 3;
+            SPDLOG_TRACE("GET_VOLTYPE: {}", rt);
+            return rt;
+        }
+
+        case SET_VOLTYPE:
+            SPDLOG_TRACE("SET_VOLTYPE: {}", (int)parameter);
+            global.vol_type_ = (int)parameter;
+            return parameter;
+
+        case SET_HWND:
+        {
+            SPDLOG_TRACE("SET_HWND: 0x{:x}", parameter);
+            global.handle_ = (HWND)parameter;
+            return parameter;
+        }
 
         case GET_HEARTBEAT:
-        case SET_HWND:
         case GET_CALLBACK:
         case SET_FUNCTIONS:
         case SET_CCY:

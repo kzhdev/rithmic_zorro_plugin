@@ -22,9 +22,14 @@
 #include "stdafx.h"
 #include "client.h"
 #include "utils.h"
+#include "global.h"
 
 using namespace zorro;
 using namespace RApi;
+
+namespace {
+    auto &global = Global::get();
+}
 
 RithmicClient::RequestStatus RithmicClient::waitForRequest()
 {
@@ -216,8 +221,11 @@ int RithmicClient::BestAskQuote(RApi::AskInfo *pInfo, void *pContext, int *aiCod
             while (!iter->second.top_.compare_exchange_weak(top, new_top, std::memory_order_release, std::memory_order_relaxed));
             if (was_nan && !std::isnan(new_top.ask_price_))
             {
-                SPDLOG_TRACE("{} BestAsk {}@{}", sym, pInfo->bSizeFlag ? pInfo->llSize : 0, pInfo->bPriceFlag ? pInfo->dPrice : NAN);
                 setMDReady(iter->second, MDReady::Top);
+            }
+            if (global.handle_ && global.price_type_.load(std::memory_order_relaxed) != 2)
+            {
+                PostMessage(global.handle_, WM_APP+1, 0, 0);
             }
         }
     }
@@ -261,9 +269,11 @@ int RithmicClient::BestBidAskQuote(RApi::BidInfo *pBid, RApi::AskInfo *pAsk, voi
             while (!iter->second.top_.compare_exchange_weak(top, new_top, std::memory_order_release, std::memory_order_relaxed));
             if (was_nan && !std::isnan(new_top.ask_price_))
             {
-                SPDLOG_TRACE("{} BestBid: {}@{} BestAsk: {}@{}", sym, pBid->bSizeFlag ? pBid->llSize : 0, pBid->bPriceFlag ? pBid->dPrice : NAN, 
-                    pAsk->bSizeFlag ? pAsk->llSize : 0, pAsk->bPriceFlag ? pAsk->dPrice : NAN);
                 setMDReady(iter->second, MDReady::Top);
+            }
+            if (global.handle_ && global.price_type_.load(std::memory_order_relaxed) != 2)
+            {
+                PostMessage(global.handle_, WM_APP+1, 0, 0);
             }
         }
     }
@@ -295,6 +305,10 @@ int RithmicClient::BestBidQuote(RApi::BidInfo *pInfo, void *pContext, int *aiCod
                 }
             }
             while (!iter->second.top_.compare_exchange_weak(top, new_top, std::memory_order_release, std::memory_order_relaxed));
+            if (global.handle_ && global.price_type_.load(std::memory_order_relaxed) != 2)
+            {
+                PostMessage(global.handle_, WM_APP+1, 0, 0);
+            }
         }
     }
     *aiCode = API_OK;

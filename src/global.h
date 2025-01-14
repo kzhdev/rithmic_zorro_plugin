@@ -27,8 +27,6 @@
 
 namespace zorro {
 
-typedef void (*SignalHandlerPointer)(int); 
-
 struct Global
 {
     static Global& get()
@@ -53,17 +51,12 @@ struct Global
 
     uint64_t wait_time_ = 60000000000;
     double multiplier_ = 1.0;
-    int32_t price_type_ = 0;
+    std::atomic<int32_t> price_type_{0};
+    int32_t vol_type_ = 0;
 
     std::unordered_set<std::string> asset_no_data_;
 
-    void setSingnalHandler(SignalHandlerPointer handler)
-    {
-        if (!signal_handler_)
-        {
-            signal_handler_ = handler;
-        }
-    }
+    HWND handle_ = nullptr;
 
     void reset()
     {
@@ -76,15 +69,13 @@ struct Global
         limit_price_ = NAN;
         wait_time_ = 60000000000;
         multiplier_ = 1.0;
-        price_type_ = 0;
         asset_no_data_.clear();
+        price_type_.store(0, std::memory_order_release);
     }
 
 private:
     Global() = default;
     ~Global() = default;
-
-    SignalHandlerPointer signal_handler_ = nullptr;
 };
     
 } // namespace zorro

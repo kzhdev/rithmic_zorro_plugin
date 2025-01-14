@@ -22,9 +22,15 @@
 #include "stdafx.h"
 #include "client.h"
 #include "utils.h"
+#include "global.h"
 
 using namespace zorro;
 using namespace RApi;
+
+namespace
+{
+    auto &global = Global::get();
+}
 
 int RithmicClient::TradePrint(RApi::TradeInfo *pInfo, void *pContext, int *aiCode)
 {
@@ -58,6 +64,11 @@ int RithmicClient::TradePrint(RApi::TradeInfo *pInfo, void *pContext, int *aiCod
                 new_trade.sell_volume_ = trade.sell_volume_;
             }
             while (!symbol.last_trade_.compare_exchange_weak(trade, new_trade, std::memory_order_release, std::memory_order_relaxed));
+
+            if (global.handle_ && global.price_type_.load(std::memory_order_relaxed) == 2)
+            {
+                PostMessage(global.handle_, WM_APP+1, 0, 0);
+            }
         }
     }
     *aiCode = API_OK;

@@ -1,2 +1,13 @@
+1.0.0.1
+- Use WM_APP+1 message to trigger a price quote request
+- Implement SET_VOLTYPE support.
+    - 0 - Broker default, usually quote size;
+    - 1 - no volume;
+    - 2 - Market Delta (bid volume - ask volume); Note: This is different in Zorro menue
+    - 3 - quote size (ask+bid);
+    - 4 - trade volume;
+    - 5 - ask size;
+    - 6 - bid size;
+
 1.0.0.0
 - Initial Beta release
