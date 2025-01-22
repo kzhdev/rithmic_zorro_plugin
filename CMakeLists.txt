@@ -23,6 +23,8 @@ endif()
 find_package(spdlog REQUIRED CONFIG)
 add_definitions(-DSPDLOG_USE_STD_FORMAT -DSPDLOG_USE_STD_FORMAT_HO)
 
+find_package(date CONFIG REQUIRED)
+
 configure_file(src/version.h.in ${CMAKE_CURRENT_BINARY_DIR}/version.h)
 
 # Enable precompiled headers
@@ -35,6 +37,7 @@ message(STATUS "R|Api+ include: ${RITHMIC_INCLUDE_DIR}")
 message(STATUS "R|Api+ lib: ${RITHMIC_LIB_DIR}")
 message(STATUS "Zorro: $ENV{ZORRO_ROOT}")
 message(STATUS "spdlog: ${spdlog_DIR}")
+message(STATUS "date: ${date_DIR}")
 
 if (NOT EXISTS ${RITHMIC_INCLUDE_DIR})
     message(FATAL_ERROR "R|Api+ include diretory ${RITHMIC_INCLUDE_DIR} doesn't exist")

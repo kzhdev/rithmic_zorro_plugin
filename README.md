@@ -135,6 +135,7 @@ Rithimic Zorro Plugin relies on several external libraries. You can install thes
 2. **Install Required Libraries**:
     ```sh
     ./vcpkg install spdlog
+    ./vcpkg install date
     ```
 
 3. **Integrate vcpkg with CMake**: 
