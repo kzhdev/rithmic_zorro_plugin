@@ -64,11 +64,7 @@ namespace zorro
         try
         {
             spdlog::init_thread_pool(8192, 1);
-#ifdef DEBUG
-            auto async_sink = std::make_shared<spdlog::sinks::rotating_file_sink_mt>(std::format("./Log/rithmic_plugin.log"), 524288000, 5);
-#else
-            auto async_sink = std::make_shared<spdlog::sinks::rotating_file_sink_mt>(std::format("./Log/rithmic_plugin_{}.log", GetCurrentProcessId()), 524288000, 5);
-#endif
+            auto async_sink = std::make_shared<spdlog::sinks::rotating_file_sink_mt>(std::format("./Log/rithmic_plugin_{}_{}.log", report(25), Type), 524288000, 5);
             auto async_logger = std::make_shared<spdlog::async_logger>("async_logger", async_sink, spdlog::thread_pool(), spdlog::async_overflow_policy::overrun_oldest);
             spdlog::set_default_logger(async_logger);
 #ifdef DEBUG
@@ -525,9 +521,15 @@ namespace zorro
             return parameter;
         }
 
+        case SET_FUNCTIONS:
+        {
+            FARPROC* Functions = (FARPROC*)parameter;
+            (FARPROC &)report = Functions[565];
+            break;
+        }
+
         case GET_HEARTBEAT:
         case GET_CALLBACK:
-        case SET_FUNCTIONS:
         case SET_CCY:
         case SET_LEVERAGE:
             return 0;
