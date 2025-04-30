@@ -31,14 +31,35 @@ namespace {
     auto &global = Global::get();
 }
 
-RithmicClient::RequestStatus RithmicClient::waitForRequest()
+RithmicClient::RequestStatus RithmicClient::waitForRequest(uint32_t timeout_ms)
 {
     RequestStatus status;
-    while((status = request_status_.load(std::memory_order_relaxed)) == RequestStatus::AwaitingResults)
+    if (timeout_ms > 0)
     {
-        if (!BrokerProgress(1))
+        auto start = get_timestamp();
+        while ((status = request_status_.load(std::memory_order_relaxed)) == RequestStatus::AwaitingResults)
         {
-            return RequestStatus::Failed;
+            if (!BrokerProgress(1))
+            {
+                status = RequestStatus::Failed;
+                break;
+            }
+            if ((get_timestamp() - start) > timeout_ms)
+            {
+                status = RequestStatus::Timeout;
+                break;
+            }
+        }
+    }
+    else
+    {
+        while((status = request_status_.load(std::memory_order_relaxed)) == RequestStatus::AwaitingResults)
+        {
+            if (!BrokerProgress(1))
+            {
+                status = RequestStatus::Failed;
+                break;
+            }
         }
     }
     request_status_.store(RequestStatus::NoRequest, std::memory_order_relaxed);

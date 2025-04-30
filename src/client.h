@@ -91,6 +91,7 @@ class RithmicClient : public RApi::RCallbacks
         AwaitingResults,
         Complete,
         Failed,
+        Timeout,
     };
 
     std::atomic_bool unaccepted_agreements_received_;
@@ -193,7 +194,7 @@ public:
 
 private:
     bool checkAgreements(std::string &err);
-    RequestStatus waitForRequest();
+    RequestStatus waitForRequest(uint32_t timeout_ms = 0);
     void setMDReady(Symbol &symbol, MDReady falg);
     bool listTradeRoutes();
     bool subscribeOrder();

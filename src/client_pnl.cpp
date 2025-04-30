@@ -42,7 +42,13 @@ bool RithmicClient::subscribePnl()
         return false;
     }
 
-    auto status = waitForRequest();
+    auto status = waitForRequest(10000);
+    if (status == RequestStatus::Timeout)
+    {
+        BrokerError("REngine::replayPnl() timeout");
+        return true;
+    }
+
     return status == RequestStatus::Complete;
 }
 

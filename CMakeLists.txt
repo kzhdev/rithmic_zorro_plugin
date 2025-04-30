@@ -195,4 +195,18 @@ if (CMAKE_BUILD_TYPE MATCHES Release)
             COMMENT "Creating zip archive 64bit"
         )
     endif()
+
+    if (DEFINED ENV{ZORRO_ROOT})
+        if ("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "win32")
+            add_custom_command(TARGET rithmic_zorro_plugin
+                POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/bin/Release/Rithmic.dll $ENV{ZORRO_ROOT}/plugin/Rithmic.dll
+            )
+        else()
+            add_custom_command(TARGET rithmic_zorro_plugin
+                POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/bin/Release/Rithmic.dll $ENV{ZORRO_ROOT}/plugin64/Rithmic.dll
+            )
+        endif()
+    endif()
 endif()
