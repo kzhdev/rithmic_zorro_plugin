@@ -8,6 +8,9 @@
     - 4 - trade volume;
     - 5 - ask size;
     - 6 - bid size;
+- Changed the plugin log file name to rithmic_plugin_<Strategy Name>_<Mode>.log
+- Rimthic replayPnl doesn't always get a callback, added a timeout to continue login.
+- Fix REngine environemnt parameter is not set correctly.
 
 1.0.0.0
 - Initial Beta release
