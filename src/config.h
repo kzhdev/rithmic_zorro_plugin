@@ -113,6 +113,39 @@ namespace zorro {
                 getConfig(line, ConfigFound::cf_MML_LOG_TYPE, "MML_LOG_TYPE", MML_LOG_TYPE, true);
                 getConfig(line, ConfigFound::cf_MML_SSL_CLNT_AUTH_FILE, "MML_SSL_CLNT_AUTH_FILE", MML_SSL_CLNT_AUTH_FILE, true);
             }
+
+            for (size_t i = 1; i < ConfigFound::__count__; ++i)
+            {
+                if (configFound_.test(i))
+                {
+                    switch (i)
+                    {
+                        case ConfigFound::cf_MML_DMN_SRVR_ADDR:
+                            envp_[i - 1] = MML_DMN_SRVR_ADDR.data();
+                            break;
+                        case ConfigFound::cf_MML_DOMAIN_NAM:
+                            envp_[i - 1] = MML_DOMAIN_NAME.data();
+                            break;
+                        case ConfigFound::cf_MML_LIC_SRVR_ADDR:
+                            envp_[i - 1] = MML_LIC_SRVR_ADDR.data();
+                            break;
+                        case ConfigFound::cf_MML_LOC_BROK_ADDR:
+                            envp_[i - 1] = MML_LOC_BROK_ADDR.data();
+                            break;
+                        case ConfigFound::cf_MML_LOGGER_ADDR:
+                            envp_[i - 1] = MML_LOGGER_ADDR.data();
+                            break;
+                        case ConfigFound::cf_MML_LOG_TYPE:
+                            envp_[i - 1] = MML_LOG_TYPE.data();
+                            break;
+                        case ConfigFound::cf_MML_SSL_CLNT_AUTH_FILE:
+                            envp_[i - 1] = MML_SSL_CLNT_AUTH_FILE.data();
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
             return configFound_.all();
         }
 
