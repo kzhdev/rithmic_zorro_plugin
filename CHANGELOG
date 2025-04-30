@@ -3,11 +3,14 @@
 - Implement SET_VOLTYPE support.
     - 0 - Broker default, usually quote size;
     - 1 - no volume;
-    - 2 - Market Delta (bid volume - ask volume); Note: This is different in Zorro menue
+    - 2 - Market Delta (bid volume - ask volume); Note: This is different in the Zorro menu
     - 3 - quote size (ask+bid);
     - 4 - trade volume;
     - 5 - ask size;
     - 6 - bid size;
+- Changed the plugin log file name to rithmic_plugin_<Strategy Name>_<Mode>.log
+- Rimthic replayPnl doesn't always receive a callback; added a timeout to continue the login.
+- Fix the REngine environment parameter, which is not set correctly.
 
 1.0.0.0
 - Initial Beta release
