@@ -40,7 +40,7 @@ MML_LOC_BROK_ADDR=rituz00100.00.rithmic.com:64100
 MML_LOGGER_ADDR=rituz00100.00.rithmic.com:45454~rituz00100.00.rithmic.net:45454~rituz00100.00.theomne.com:45454~rituz00100.00.theomne.net:45454
 MML_LOG_TYPE=log_net
 MML_SSL_CLNT_AUTH_FILE=rithmic_ssl_cert_auth_params
-RithmicLogLevel=info     // 0=TRACE, 1=DEBUG, 2=INFO, 3=WARNING, 4=ERROR, 5=CRITICAL, 6=OFF Default to 2(INFO).
+RithmicLogLevel=2     // 0=TRACE, 1=DEBUG, 2=INFO, 3=WARNING, 4=ERROR, 5=CRITICAL, 6=OFF Default to 2(INFO).
 ```
 
 **MML_DMN_SRVR_ADDR**, **MML_DOMAIN_NAME**, **MML_LIC_SRVR_ADDR**, **MML_LOC_BROK_ADDR**, **MML_LOGGER_ADDR**, **MML_LOG_TYPE**: 
