@@ -25,8 +25,8 @@ To install the plugin, follow these steps:
 To use the plugin, follow these steps:
 
 1. Open Zorro, select Rithmic as the broker.
-3. Enter the **Your Rithmic User ID** in the **User ID** input box.
-4. Enter the **Your Rithmic Password** in the **Password** input box.
+2. Enter the **Your Rithmic User ID** in the **User ID** input box.
+3. Enter the **Your Rithmic Password** in the **Password** input box.
 
 ## Configuration
 
@@ -45,7 +45,7 @@ RithmicConfigPath="path of the rithmic config toml file"    // Optional. Default
 ### Rithimc Server Configuration
 The `rithmic_config.toml` file, included in the release, defines Rithimic server settings for environments like Rithmic 01, Rithimic Paper Trading and Rithmic Test.
 User can obtain server configuration details from their broker or extract them from the Rithmic Trader Pro log file located at Documents/Rithmic/ (e.g. Rithmic Trader Pro.cur.txt).
-Open the log file in a text editor to find values for server addresses and other parameters.
+Open the log file in a text editor to find values for server addresses and other parameters (e.g. Domain, Domain Server, License Server, Location Broker, Logger, Log Type, etc.).
 
 The `rithmic_config.toml` file uses the following format:
 ```toml
