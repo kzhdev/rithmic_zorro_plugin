@@ -1,3 +1,7 @@
+[1.1.0.0] - 2025-05-22
+- Migrated Rithmic server configuration from ZorroFix.ini to a dedicated rithmic_config.toml file for improved flexibility and maintainability.
+- Introduced a Rithmic login dialog, allowing users to select a Rithmic server from a dropdown list and displaying Rithmic and OMNE copyright notices.
+
 1.0.0.1
 - Use WM_APP+1 message to trigger a price quote request
 - Implement SET_VOLTYPE support.

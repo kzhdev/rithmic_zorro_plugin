@@ -18,11 +18,11 @@
 
 #include "stdafx.h"
 
-#include "RithmicZorroPlugin.h"
+#include "rithmic_zorro_plugin.h"
 #include "client.h"
 #include "config.h"
 #include "global.h"
-
+#include "rithmic_login_dialog.h"
 // standard library
 #include <type_traits>
 #include "utils.h"
@@ -60,7 +60,6 @@ namespace zorro
             shutdown();
             return 0;
         }
-
         try
         {
             spdlog::init_thread_pool(8192, 1);
@@ -89,6 +88,16 @@ namespace zorro
             return 0;
         }
 
+        auto server = ShowLoginDialog(client_->getServerNames());
+        if (server.empty())
+        {
+            BrokerError("Login cancelled.");
+            shutdown();
+            return 0;
+        }
+
+        client_->setServer(server);
+
         std::string err;
         if (!client_->login(Pwd, err))
         {
@@ -109,6 +118,11 @@ namespace zorro
         BrokerError(std::format("Account {}", client_->accountId()).c_str());
         sprintf_s(Account, 1024, client_->accountId().data());
         return 1;
+    }
+
+    DLLFUNC_C int BrokerTime(DATE* pTimeGMT)
+    {
+        return 2;
     }
 
     DLLFUNC_C int BrokerAsset(char* Asset, double* pPrice, double* pSpread, double* pVolume, double* pPip, double* pPipCost, double* pLotAmount, double* pMarginCost, double* pRollLong, double* pRollShort)

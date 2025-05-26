@@ -47,26 +47,7 @@ namespace zorro {
 
     struct Config {
         uint8_t log_level_ = spdlog::level::info;
-
-        std::string MML_DMN_SRVR_ADDR = "MML_DMN_SRVR_ADDR=rituz00100.00.rithmic.com:65000~rituz00100.00.rithmic.net:65000~rituz00100.00.theomne.net:65000~rituz00100.00.theomne.com:65000";
-        std::string MML_DOMAIN_NAME = "MML_DOMAIN_NAME=rithmic_uat_dmz_domain";
-        std::string MML_LIC_SRVR_ADDR = "MML_LIC_SRVR_ADDR=rituz00100.00.rithmic.com:56000~rituz00100.00.rithmic.net:56000~rituz00100.00.theomne.net:56000~rituz00100.00.theomne.com:56000";
-        std::string MML_LOC_BROK_ADDR = "MML_LOC_BROK_ADDR=rituz00100.00.rithmic.com:64100";
-        std::string MML_LOGGER_ADDR = "MML_LOGGER_ADDR=rituz00100.00.rithmic.com:45454~rituz00100.00.rithmic.net:45454~rituz00100.00.theomne.com:45454~rituz00100.00.theomne.net:45454";
-        std::string MML_LOG_TYPE = "MML_LOG_TYPE=log_net";
-        std::string MML_SSL_CLNT_AUTH_FILE = "MML_SSL_CLNT_AUTH_FILE=rithmic_ssl_cert_auth_params";
-
-        char* envp_[9] = {
-            MML_DMN_SRVR_ADDR.data(),
-            MML_DOMAIN_NAME.data(),
-            MML_LIC_SRVR_ADDR.data(),
-            MML_LOC_BROK_ADDR.data(),
-            MML_LOGGER_ADDR.data(),
-            MML_LOG_TYPE.data(),
-            MML_SSL_CLNT_AUTH_FILE.data(),
-            nullptr,
-            nullptr,
-        };
+        std::string rithmic_config_path_ = "rithmic_config.toml";
 
         static Config& get()
         {
@@ -105,47 +86,9 @@ namespace zorro {
                 }
 
                 getConfig(line, ConfigFound::cf_LogLevel, "RithmicLogLevel", log_level_);
-                getConfig(line, ConfigFound::cf_MML_DMN_SRVR_ADDR, "MML_DMN_SRVR_ADDR", MML_DMN_SRVR_ADDR, true);
-                getConfig(line, ConfigFound::cf_MML_DOMAIN_NAM, "MML_DOMAIN_NAME", MML_DOMAIN_NAME, true);
-                getConfig(line, ConfigFound::cf_MML_LIC_SRVR_ADDR, "MML_LIC_SRVR_ADDR", MML_LIC_SRVR_ADDR, true);
-                getConfig(line, ConfigFound::cf_MML_LOC_BROK_ADDR, "MML_LOC_BROK_ADDR", MML_LOC_BROK_ADDR, true);
-                getConfig(line, ConfigFound::cf_MML_LOGGER_ADDR, "MML_LOGGER_ADDR", MML_LOGGER_ADDR, true);
-                getConfig(line, ConfigFound::cf_MML_LOG_TYPE, "MML_LOG_TYPE", MML_LOG_TYPE, true);
-                getConfig(line, ConfigFound::cf_MML_SSL_CLNT_AUTH_FILE, "MML_SSL_CLNT_AUTH_FILE", MML_SSL_CLNT_AUTH_FILE, true);
+                getConfig(line, ConfigFound::cf_RithmicConfigPath, "RithmicConfigPath", rithmic_config_path_);
             }
-
-            for (size_t i = 1; i < ConfigFound::__count__; ++i)
-            {
-                if (configFound_.test(i))
-                {
-                    switch (i)
-                    {
-                        case ConfigFound::cf_MML_DMN_SRVR_ADDR:
-                            envp_[i - 1] = MML_DMN_SRVR_ADDR.data();
-                            break;
-                        case ConfigFound::cf_MML_DOMAIN_NAM:
-                            envp_[i - 1] = MML_DOMAIN_NAME.data();
-                            break;
-                        case ConfigFound::cf_MML_LIC_SRVR_ADDR:
-                            envp_[i - 1] = MML_LIC_SRVR_ADDR.data();
-                            break;
-                        case ConfigFound::cf_MML_LOC_BROK_ADDR:
-                            envp_[i - 1] = MML_LOC_BROK_ADDR.data();
-                            break;
-                        case ConfigFound::cf_MML_LOGGER_ADDR:
-                            envp_[i - 1] = MML_LOGGER_ADDR.data();
-                            break;
-                        case ConfigFound::cf_MML_LOG_TYPE:
-                            envp_[i - 1] = MML_LOG_TYPE.data();
-                            break;
-                        case ConfigFound::cf_MML_SSL_CLNT_AUTH_FILE:
-                            envp_[i - 1] = MML_SSL_CLNT_AUTH_FILE.data();
-                            break;
-                        default:
-                            break;
-                    }
-                }
-            }
+            config.close();
             return configFound_.all();
         }
 
@@ -190,15 +133,10 @@ namespace zorro {
 
 
     private:
-        enum ConfigFound : uint8_t {
+        enum ConfigFound : uint8_t
+        {
             cf_LogLevel,
-            cf_MML_DMN_SRVR_ADDR,
-            cf_MML_DOMAIN_NAM,
-            cf_MML_LIC_SRVR_ADDR,
-            cf_MML_LOC_BROK_ADDR,
-            cf_MML_LOGGER_ADDR,
-            cf_MML_LOG_TYPE,
-            cf_MML_SSL_CLNT_AUTH_FILE,
+            cf_RithmicConfigPath,
             __count__,  // for internal use only
         };
         std::bitset<ConfigFound::__count__> configFound_ = 0;

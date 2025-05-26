@@ -26,6 +26,7 @@ add_definitions(-DSPDLOG_USE_STD_FORMAT -DSPDLOG_USE_STD_FORMAT_HO)
 find_package(date CONFIG REQUIRED)
 
 configure_file(src/version.h.in ${CMAKE_CURRENT_BINARY_DIR}/version.h)
+configure_file(resources/version.rc.in ${CMAKE_CURRENT_BINARY_DIR}/version.rc)
 
 # Enable precompiled headers
 set(CMAKE_CXX_PCH_ENABLED TRUE)
@@ -49,16 +50,22 @@ endif()
 
 file(GLOB_RECURSE SOURCE_FILES src/*.cpp)
 
-add_library(rithmic_zorro_plugin SHARED ${SOURCE_FILES})
+# Define resource files
+set(RESOURCES
+    resources/resource.rc
+    ${CMAKE_CURRENT_BINARY_DIR}/version.rc
+)
+
+add_library(rithmic_zorro_plugin SHARED ${SOURCE_FILES} ${RESOURCES})
 
 set_target_properties(rithmic_zorro_plugin PROPERTIES OUTPUT_NAME "Rithmic")
 
 target_include_directories(rithmic_zorro_plugin PUBLIC
     ${CMAKE_CURRENT_BINARY_DIR}
     ${RITHMIC_INCLUDE_DIR}
-    3rdparty/HowardHinnant/date/include
+    3rdparty
     3rdparty/zorro
-    3rdparty/slick_queue/include
+    resources
     src
 )
 
@@ -173,6 +180,8 @@ target_link_libraries(rithmic_zorro_plugin PRIVATE
     bcrypt.lib
     crypt32.lib
     spdlog::spdlog_header_only
+    user32.lib
+    comctl32.lib # For dialog controls
 )
 
 if (CMAKE_BUILD_TYPE MATCHES Release)
@@ -181,6 +190,7 @@ if (CMAKE_BUILD_TYPE MATCHES Release)
             POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_BINARY_DIR}/dist"
             COMMAND ${CMAKE_COMMAND} -E copy "${RITHMIC_INCLUDE_DIR}/../etc/rithmic_ssl_cert_auth_params" "${CMAKE_BINARY_DIR}/bin/Release/"
+            COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_SOURCE_DIR}/rithmic_config.toml" "${CMAKE_BINARY_DIR}/bin/Release/"
             COMMAND ${CMAKE_COMMAND} -E tar "cfv" "${CMAKE_BINARY_DIR}/dist/RithmicZorroPlugin_${BUILD_VERSION}.zip" --format=zip "./"
             WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin/Release"
             COMMENT "Creating zip archive"
@@ -190,6 +200,7 @@ if (CMAKE_BUILD_TYPE MATCHES Release)
             POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_BINARY_DIR}/dist"
             COMMAND ${CMAKE_COMMAND} -E copy "${RITHMIC_INCLUDE_DIR}/../etc/rithmic_ssl_cert_auth_params" "${CMAKE_BINARY_DIR}/bin/Release/"
+            COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_SOURCE_DIR}/rithmic_config.toml" "${CMAKE_BINARY_DIR}/bin/Release/"
             COMMAND ${CMAKE_COMMAND} -E tar "cfv" "${CMAKE_BINARY_DIR}/dist/RithmicZorroPlugin64_${BUILD_VERSION}.zip" --format=zip "./"
             WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin/Release"
             COMMENT "Creating zip archive 64bit"

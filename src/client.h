@@ -32,6 +32,7 @@
 #include "symbol.h"
 #include "Order.h"
 #include "pnl.h"
+#include "rithmic_system_config.h"
 
 #include <windows.h>
 typedef double DATE;			//prerequisite for using trading.h
@@ -58,6 +59,8 @@ struct AdmCallbacks : public RApi::AdmCallbacks
 class RithmicClient : public RApi::RCallbacks
 {
     static constexpr uint32_t MAX_ORDER_NUM = 1000000;
+
+    RithmicSystemConfig system_config_;
 
     const uint64_t pid_;
     std::string user_;
@@ -114,6 +117,10 @@ class RithmicClient : public RApi::RCallbacks
 public:
     RithmicClient(std::string user);
     ~RithmicClient();
+
+    const std::vector<std::string>& getServerNames() const noexcept { return system_config_.server_names; }
+
+    void setServer(const std::string &server);
 
     std::string_view accountId() const noexcept;
     PnL pnl() const noexcept { return pnl_.load(std::memory_order_relaxed); }

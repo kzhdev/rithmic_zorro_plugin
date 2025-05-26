@@ -43,7 +43,7 @@ namespace zorro
     // zorro functions
     DLLFUNC_C int BrokerOpen(char* Name, FARPROC fpError, FARPROC fpProgress);
     DLLFUNC_C int BrokerLogin(char* User, char* Pwd, char* Type, char* Account);
-    // DLLFUNC_C int BrokerTime(DATE* pTimeGMT);
+    DLLFUNC_C int BrokerTime(DATE* pTimeGMT);
     DLLFUNC_C int BrokerAsset(char* Asset, double* pPrice, double* pSpread, double* pVolume, double* pPip, double* pPipCost, double* pLotAmount, double* pMarginCost, double* pRollLong, double* pRollShort);
     DLLFUNC_C int BrokerHistory2(char* Asset, DATE tStart, DATE tEnd, int nTickMinutes, int nTicks, T6* ticks);
     DLLFUNC_C int BrokerBuy2(char* Asset, int nAmount, double dStopDist, double dLimit, double* pPrice, int* pFill);

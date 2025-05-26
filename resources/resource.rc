@@ -1,0 +1,42 @@
+// The MIT License (MIT)
+// Copyright (c) 2024-2025 Kun Zhao
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+#include <windows.h>
+#include "resource.h"
+
+IDD_LOGIN_DIALOG DIALOGEX 0, 0, 300, 200
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "R | API+ Login"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    CONTROL         "", IDC_RITHMIC_LOGO, "STATIC", SS_BITMAP, 50, 20, 180, 60
+    LTEXT           "System:", IDC_SYSTEM_LABEL, 30, 52, 40, 10
+    COMBOBOX        IDC_SERVER_COMBO, 60, 50, 180, 100, CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "The R | API+ software is Copyright (c) 2025 by Rithmic, LLC. All rights reserved.", IDC_COPYRIGHT_RAPI, 20, 80, 260, 10
+    LTEXT           "Trading Platform by Rithmic is a trademark of Rithmic, LLC. All rights reserved.", IDC_COPYRIGHT_RITHMIC, 20, 95, 260, 10
+    LTEXT           "The OMNE software is Copyright (c) 2025 by Omnesys, LLC and Omnesys Technologies, Inc. All rights reserved.", IDC_COPYRIGHT_OMNE, 20, 110, 260, 20
+    LTEXT           "                                                  is a trademark of Omnesys, LLC and Omnesys Technologies, Inc. All rights reserved.", IDC_OMNE_COPYRIGHT, 20, 138, 260, 20
+    CONTROL         "", IDC_OMNE_LOGO, "STATIC", SS_BITMAP, 20, 135, 80, 60
+    DEFPUSHBUTTON   "Login", IDOK, 110, 170, 80, 20
+END
+
+IDI_OMNE_LOGO BITMAP "Powered_by_Omne.bmp"
+IDI_RITHMIC_LOGO BITMAP "Platform_by_Rithmic.bmp"

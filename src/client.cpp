@@ -29,23 +29,12 @@ using namespace zorro;
 using namespace RApi;
 
 RithmicClient::RithmicClient(std::string user)
-    : pid_(GetCurrentProcessId())
+    : system_config_(Config::get().rithmic_config_path_)
+    , pid_(GetCurrentProcessId())
     , user_(user)
     , env_user_("USER=" + std::move(user))
 {
-    auto &config = Config::get();
-    config.envp_[7] = (char*)env_user_.data();
-
-    engine_params_.sAppName.pData = (char*)"RithmicZorroPlugin";
-    engine_params_.sAppName.iDataLen = (int)strlen(engine_params_.sAppName.pData);
-    engine_params_.sAppVersion.pData = (char*)VERSION;
-    engine_params_.sAppVersion.iDataLen = (int)strlen(engine_params_.sAppVersion.pData);
-    engine_params_.envp = config.envp_;
-    engine_params_.pAdmCallbacks = &adm_callbacks_;
-    engine_params_.sLogFilePath.pData = (char*)"./Log/rithmic.log";
-    engine_params_.sLogFilePath.iDataLen = (int)strlen(engine_params_.sLogFilePath.pData);
-
-    engine_ = std::make_unique<REngine>(&engine_params_);
+    system_config_.env[7] = (char*)env_user_.data();
     ticks_.reserve(15000);
 }
 
@@ -57,6 +46,24 @@ RithmicClient::~RithmicClient()
         engine_->logout(&iIgnored);
     }
 }
+
+void RithmicClient::setServer(const std::string &server_name)
+{
+    BrokerError(std::format("Connecting to server: {}", server_name).c_str());
+    system_config_.setServer(server_name);
+    
+    engine_params_.sAppName.pData = (char*)"RithmicZorroPlugin";
+    engine_params_.sAppName.iDataLen = (int)strlen(engine_params_.sAppName.pData);
+    engine_params_.sAppVersion.pData = (char*)VERSION;
+    engine_params_.sAppVersion.iDataLen = (int)strlen(engine_params_.sAppVersion.pData);
+    engine_params_.envp = system_config_.env.data();
+    engine_params_.pAdmCallbacks = &adm_callbacks_;
+    engine_params_.sLogFilePath.pData = (char*)"./Log/rithmic.log";
+    engine_params_.sLogFilePath.iDataLen = (int)strlen(engine_params_.sLogFilePath.pData);
+
+    engine_ = std::make_unique<REngine>(&engine_params_);
+}
+
 
 std::string_view RithmicClient::accountId() const noexcept
 {
