@@ -31,11 +31,7 @@ VS_VERSION_INFO VERSIONINFO
  FILEVERSION @rithmic_zorro_plugin_VERSION_MAJOR@,@rithmic_zorro_plugin_VERSION_MINOR@,@rithmic_zorro_plugin_VERSION_PATCH@,@rithmic_zorro_plugin_VERSION_TWEAK@
  PRODUCTVERSION @rithmic_zorro_plugin_VERSION_MAJOR@,@rithmic_zorro_plugin_VERSION_MINOR@,@rithmic_zorro_plugin_VERSION_PATCH@,@rithmic_zorro_plugin_VERSION_TWEAK@
  FILEFLAGSMASK 0x3fL
-#ifdef _DEBUG
- FILEFLAGS VFF_DONTCARE
-#else
  FILEFLAGS VS_FF_PRERELEASE
-#endif
  FILEOS 0x40004L
  FILETYPE VFT_DLL
  FILESUBTYPE VFT2_UNKNOWN

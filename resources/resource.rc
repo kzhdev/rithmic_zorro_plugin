@@ -22,6 +22,19 @@
 #include <windows.h>
 #include "resource.h"
 
+IDD_COPYRIGHT_DIALOG DIALOGEX 0, 0, 285, 120
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP
+CAPTION ""
+FONT 8, "MS Shell Dlg"
+BEGIN
+    CONTROL         "", IDC_RITHMIC_LOGO, "STATIC", SS_BITMAP, 50, 20, 180, 60
+    LTEXT           "The R | API+ software is Copyright (c) 2025 by Rithmic, LLC. All rights reserved.", IDC_COPYRIGHT_RAPI, 20, 50, 260, 10
+    LTEXT           "Trading Platform by Rithmic is a trademark of Rithmic, LLC. All rights reserved.", IDC_COPYRIGHT_RITHMIC, 20, 65, 260, 10
+    LTEXT           "The OMNE software is Copyright (c) 2025 by Omnesys, LLC and Omnesys Technologies, Inc. All rights reserved.", IDC_COPYRIGHT_OMNE, 20, 80, 260, 20
+    LTEXT           "                                                  is a trademark of Omnesys, LLC and Omnesys Technologies, Inc. All rights reserved.", IDC_OMNE_COPYRIGHT, 20, 108, 260, 20
+    CONTROL         "", IDC_OMNE_LOGO, "STATIC", SS_BITMAP, 20, 105, 80, 60
+END
+
 IDD_LOGIN_DIALOG DIALOGEX 0, 0, 300, 200
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "R | API+ Login"
@@ -36,6 +49,15 @@ BEGIN
     LTEXT           "                                                  is a trademark of Omnesys, LLC and Omnesys Technologies, Inc. All rights reserved.", IDC_OMNE_COPYRIGHT, 20, 138, 260, 20
     CONTROL         "", IDC_OMNE_LOGO, "STATIC", SS_BITMAP, 20, 135, 80, 60
     DEFPUSHBUTTON   "Login", IDOK, 110, 170, 80, 20
+END
+
+IDD_LOGOS_DIALOG DIALOGEX 0, 0, 190, 25
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP
+CAPTION ""
+FONT 8, "MS Shell Dlg"
+BEGIN
+    CONTROL         "", IDC_RITHMIC_LOGO, "STATIC", SS_BITMAP, 5, 5, 198, 30
+    CONTROL         "", IDC_OMNE_LOGO, "STATIC", SS_BITMAP, 50, 30, 80, 15
 END
 
 IDI_OMNE_LOGO BITMAP "Powered_by_Omne.bmp"

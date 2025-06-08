@@ -34,7 +34,18 @@ namespace zorro
     extern int(__cdecl* BrokerError)(const char* txt);
 }
 
+extern HINSTANCE g_hThisModule;
+
 namespace {
+    HBITMAP LoadBitmapFromDll(HINSTANCE hInst, int resourceId)
+    {
+        return (HBITMAP)LoadImageW(hInst,
+                                    MAKEINTRESOURCEW(resourceId),
+                                    IMAGE_BITMAP,
+                                    0, 0,
+                                    LR_DEFAULTSIZE);
+    }
+
     struct DialogData
     {
         const std::vector<std::string>& servers;
@@ -49,6 +60,9 @@ namespace {
     INT_PTR CALLBACK LoginDialogProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
     {
         static DialogData* data;
+        static HBITMAP hRithmicBitmap = nullptr;
+        static HBITMAP hOmneBitmap = nullptr;
+
         switch (message)
         {
             case WM_INITDIALOG:
@@ -70,14 +84,10 @@ namespace {
                 HWND hwndRithmicBitmap = GetDlgItem(hwnd, IDC_RITHMIC_LOGO);
                 if (hwndRithmicBitmap)
                 {
-                    HBITMAP hBitmap = (HBITMAP)LoadImageW(GetModuleHandleW(L"Rithmic.dll"),
-                                                        MAKEINTRESOURCEW(IDI_RITHMIC_LOGO),
-                                                        IMAGE_BITMAP,
-                                                        0, 0,
-                                                        LR_DEFAULTSIZE);
-                    if (hBitmap)
+                    hRithmicBitmap = LoadBitmapFromDll(g_hThisModule, IDI_RITHMIC_LOGO);
+                    if (hRithmicBitmap)
                     {
-                        SendMessageW(hwndRithmicBitmap, STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)hBitmap);
+                        SendMessageW(hwndRithmicBitmap, STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)hRithmicBitmap);
                     }
                     else
                     {
@@ -92,14 +102,10 @@ namespace {
                 HWND hwndOmneBitmap = GetDlgItem(hwnd, IDC_OMNE_LOGO);
                 if (hwndOmneBitmap)
                 {
-                    HBITMAP hBitmap = (HBITMAP)LoadImageW(GetModuleHandleW(L"Rithmic.dll"),
-                                                        MAKEINTRESOURCEW(IDI_OMNE_LOGO),
-                                                        IMAGE_BITMAP,
-                                                        0, 0,
-                                                        LR_DEFAULTSIZE);
-                    if (hBitmap)
+                    hOmneBitmap = LoadBitmapFromDll(g_hThisModule, IDI_OMNE_LOGO);
+                    if (hOmneBitmap)
                     {
-                        SendMessageW(hwndOmneBitmap, STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)hBitmap);
+                        SendMessageW(hwndOmneBitmap, STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)hOmneBitmap);
                     }
                     else
                     {
@@ -134,6 +140,19 @@ namespace {
             case WM_CLOSE:
                 EndDialog(hwnd, 0);
                 return TRUE;
+
+            case WM_DESTROY:
+                if (hRithmicBitmap)
+                {
+                    DeleteObject(hRithmicBitmap);
+                    hRithmicBitmap = nullptr;
+                }
+                if (hOmneBitmap)
+                {
+                    DeleteObject(hOmneBitmap);
+                    hOmneBitmap = nullptr;
+                }
+                return TRUE;
         }
         return FALSE;
     }
@@ -142,13 +161,7 @@ namespace {
 std::string ShowLoginDialog(const std::vector<std::string>& servers) 
 {
     DialogData data(servers);
-    HINSTANCE hInst = GetModuleHandleW(L"Rithmic.dll");
-    if (!hInst)
-    {
-        hInst = GetModuleHandle(NULL);
-        SPDLOG_ERROR("Failed to get Rithmic.dll handle, using executable handle");
-    }
-    INT_PTR result = DialogBoxParam(hInst, MAKEINTRESOURCE(IDD_LOGIN_DIALOG), zorro::Global::get().handle_, LoginDialogProc, reinterpret_cast<LPARAM>(&data));
+    INT_PTR result = DialogBoxParam(g_hThisModule, MAKEINTRESOURCE(IDD_LOGIN_DIALOG), zorro::Global::get().handle_, LoginDialogProc, reinterpret_cast<LPARAM>(&data));
     if (result == -1)
     {
         BrokerError(std::format("DialogBoxParam failed with error: {}", GetLastError()).c_str());

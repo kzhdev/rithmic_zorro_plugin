@@ -1,4 +1,8 @@
-[1.1.0.0] - 2025-05-22
+[1.1.1.0]
+- Fix resource leak.
+- Add a Rithmic copyright and logos dialog that follows Rithmic conformance requirements.
+
+[1.1.0.0]
 - Migrated Rithmic server configuration from ZorroFix.ini to a dedicated rithmic_config.toml file for improved flexibility and maintainability.
 - Introduced a Rithmic login dialog, allowing users to select a Rithmic server from a dropdown list and displaying Rithmic and OMNE copyright notices.
 

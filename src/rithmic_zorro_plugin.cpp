@@ -23,10 +23,13 @@
 #include "config.h"
 #include "global.h"
 #include "rithmic_login_dialog.h"
+#include "rithmic_copyright_dialog.h"
+#include "rithmic_logos_dialog.h"
 // standard library
 #include <type_traits>
 #include "utils.h"
 #include "pnl.h"
+#include <thread>
 
 #define PLUGIN_VERSION	2
 
@@ -57,6 +60,7 @@ namespace zorro
     {
         if (!User) // log out
         {
+            CloseRithmicLogosDialog();
             shutdown();
             return 0;
         }
@@ -114,6 +118,7 @@ namespace zorro
             return 0;
         }
 
+        ShowRithmicLogosDialog();
         SPDLOG_INFO("Login. Account: {}", client_->accountId());
         BrokerError(std::format("Account {}", client_->accountId()).c_str());
         sprintf_s(Account, 1024, client_->accountId().data());

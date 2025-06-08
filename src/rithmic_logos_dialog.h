@@ -21,17 +21,9 @@
 
 #pragma once
 
-#define IDD_LOGIN_DIALOG 101
-#define IDC_SERVER_COMBO 102
-#define IDC_SYSTEM_LABEL 103
-#define IDC_COPYRIGHT_RAPI 104
-#define IDC_COPYRIGHT_RITHMIC 105
-#define IDC_COPYRIGHT_OMNE 106
-#define IDC_OMNE_LOGO 107
-#define IDI_OMNE_LOGO 108
-#define IDC_OMNE_COPYRIGHT 109
-#define IDI_RITHMIC_LOGO 110
-#define IDC_RITHMIC_LOGO 111
-#define IDD_COPYRIGHT_DIALOG 112
-#define IDD_LOGOS_DIALOG 113
-#define IDOK 1
+#include <windows.h>
+#include <string>
+#include <vector>
+
+void ShowRithmicLogosDialog();
+void CloseRithmicLogosDialog();
