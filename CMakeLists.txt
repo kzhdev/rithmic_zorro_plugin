@@ -190,7 +190,7 @@ if (CMAKE_BUILD_TYPE MATCHES Release)
             POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_BINARY_DIR}/dist"
             COMMAND ${CMAKE_COMMAND} -E copy "${RITHMIC_INCLUDE_DIR}/../etc/rithmic_ssl_cert_auth_params" "${CMAKE_BINARY_DIR}/bin/Release/"
-            COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_SOURCE_DIR}/rithmic_config.toml" "${CMAKE_BINARY_DIR}/bin/Release/"
+            COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_SOURCE_DIR}/rithmic.bin" "${CMAKE_BINARY_DIR}/bin/Release/"
             COMMAND ${CMAKE_COMMAND} -E tar "cfv" "${CMAKE_BINARY_DIR}/dist/RithmicZorroPlugin_${BUILD_VERSION}.zip" --format=zip "./"
             WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin/Release"
             COMMENT "Creating zip archive"
@@ -200,7 +200,7 @@ if (CMAKE_BUILD_TYPE MATCHES Release)
             POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_BINARY_DIR}/dist"
             COMMAND ${CMAKE_COMMAND} -E copy "${RITHMIC_INCLUDE_DIR}/../etc/rithmic_ssl_cert_auth_params" "${CMAKE_BINARY_DIR}/bin/Release/"
-            COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_SOURCE_DIR}/rithmic_config.toml" "${CMAKE_BINARY_DIR}/bin/Release/"
+            COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_SOURCE_DIR}/rithmic.bin" "${CMAKE_BINARY_DIR}/bin/Release/"
             COMMAND ${CMAKE_COMMAND} -E tar "cfv" "${CMAKE_BINARY_DIR}/dist/RithmicZorroPlugin64_${BUILD_VERSION}.zip" --format=zip "./"
             WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin/Release"
             COMMENT "Creating zip archive 64bit"

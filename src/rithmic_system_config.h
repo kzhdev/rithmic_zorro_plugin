@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include <unordered_map>
+#include <map>
 #include <string>
 #include <array>
 
@@ -49,12 +49,30 @@ namespace zorro
             std::string MML_SSL_CLNT_AUTH_FILE = "MML_SSL_CLNT_AUTH_FILE=rithmic_ssl_cert_auth_params"; 
         };
 
-        std::vector<std::string> server_names;
-        std::unordered_map<std::string, RithimcServerInfo> servers;
+        // Comparator that puts keys starting with "Rithmic" before all others,
+        // then orders lexicographically within those groups.
+        struct RithmicFirstCompare
+        {
+            bool operator()(const std::string &a, const std::string &b) const
+            {
+                bool aIsR = a.rfind("Rithmic", 0) == 0;
+                bool bIsR = b.rfind("Rithmic", 0) == 0;
+                if (aIsR != bIsR)
+                {
+                    return aIsR;                // true < false, so Rithmic* come first
+                }
+                return a < b;                   // otherwise normal lex order
+            }
+        };
+
+         using ServerGatewayT = std::map<std::string, std::vector<std::string>, RithmicFirstCompare>;
+
+        ServerGatewayT server_gateways;
+        std::map<std::string, RithimcServerInfo, RithmicFirstCompare> servers;
 
         std::array<char*, 9> env = {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr};
 
-        RithmicSystemConfig(const std::string& config_file);
+        RithmicSystemConfig(const std::string &rimthic_config_path);
 
         void setServer(const std::string& server_name);
     };

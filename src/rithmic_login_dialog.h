@@ -24,6 +24,7 @@
 #include <windows.h>
 #include <string>
 #include <vector>
+#include "rithmic_system_config.h"
 
-// Function to show the login dialog and get the selected server
-std::string ShowLoginDialog(const std::vector<std::string>& server_names);
+// Function to show the login dialog and get the selected server_gateway
+std::string ShowLoginDialog(const zorro::RithmicSystemConfig::ServerGatewayT &server_gateways);

@@ -47,7 +47,7 @@ namespace zorro {
 
     struct Config {
         uint8_t log_level_ = spdlog::level::info;
-        std::string rithmic_config_path_ = "rithmic_config.toml";
+        std::string rithmic_config_path_ = "rithmic.bin";
 
         static Config& get()
         {

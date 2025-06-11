@@ -118,8 +118,7 @@ public:
     RithmicClient(std::string user);
     ~RithmicClient();
 
-    const std::vector<std::string>& getServerNames() const noexcept { return system_config_.server_names; }
-
+    const auto& getServerGateways() const noexcept { return system_config_.server_gateways; }
     void setServer(const std::string &server);
 
     std::string_view accountId() const noexcept;

@@ -1,139 +1,113 @@
 #include "rithmic_system_config.h"
-#include <toml.hpp>
+#include <nlohmann/json.hpp>
+#include <base64_encode_decode.h>
 
 using namespace zorro;
+using json = nlohmann::json;
 
-RithmicSystemConfig::RithmicSystemConfig(const std::string& config_file)
+namespace {
+
+// Helper: replace the first occurrence of "{}" in tmpl with value
+std::string applyTemplate(const char* tmpl, const std::string& value)
+{
+    std::string s(tmpl);
+    auto pos = s.find("{}");
+    if (pos != std::string::npos)
+    {
+        s.replace(pos, 2, value);
+    }
+    return s;
+}
+
+}   // namespace
+
+RithmicSystemConfig::RithmicSystemConfig(const std::string &rimthic_config_path)
 {
     try
     {
-        auto config = toml::parse_file(config_file);
-        for (const auto& [key, value] : config)
+        std::ifstream file(rimthic_config_path, std::ios::binary);
+        if (!file.is_open())
         {
-            if (value.is_table())
+            throw std::runtime_error(std::format("Failed to open rithmic config {}", rimthic_config_path));
+        }
+
+        file.seekg(0, std::ios::end);
+        size_t fileSize = file.tellg();
+        file.seekg(0, std::ios::beg);
+
+        std::string fileContent;
+        fileContent.resize(fileSize);
+        file.read(&fileContent[0], fileSize);
+
+        file.close();
+
+        auto json_str = base64_decode(fileContent);
+        json j = json::parse(json_str, nullptr, false);
+        if (j.is_discarded())
+        {
+            throw std::runtime_error("Failed to parse rithmic config JSON.");
+        }
+
+        // Iterate systems
+        for (auto& [system, gateways] : j.items())
+        {
+            for (auto& [gateway, params] : gateways.items())
             {
-                RithimcServerInfo server_info;
-                auto table = value.as_table();
-                if (table->contains("MML_DMN_SRVR_ADDR"))
-                {
-                    if (auto value = table->at("MML_DMN_SRVR_ADDR").as<std::string>()) [[likely]]
-                    {
-                        server_info.MML_DMN_SRVR_ADDR = std::format(RithimcServerInfo::MML_DMN_SRVR_ADDR_template, value->get());
-                    }
-                    else
-                    {
-                        throw std::runtime_error(std::format("MML_DMN_SRVR_ADDR in {} is not a string.", std::string(key)));
-                    }
-                }
-                else
-                {
-                    throw std::runtime_error(std::format("MML_DMN_SRVR_ADDR not found in {}.", std::string(key)));
-                }
-                if (table->contains("MML_DOMAIN_NAME"))
-                {
-                    if (auto value = table->at("MML_DOMAIN_NAME").as<std::string>()) [[likely]]
-                    {
-                        server_info.MML_DOMAIN_NAME = std::format(RithimcServerInfo::MML_DOMAIN_NAME_template, value->get());
-                    }
-                    else
-                    {
-                        throw std::runtime_error(std::format("MML_DOMAIN_NAME in {} is not a string.", std::string(key)));
-                    }
-                }
-                else
-                {
-                    throw std::runtime_error(std::format("MML_DOMAIN_NAME not found in {}.", std::string(key)));
-                }
-                if (table->contains("MML_LIC_SRVR_ADDR"))
-                {
-                    if (auto value = table->at("MML_LIC_SRVR_ADDR").as<std::string>()) [[likely]]
-                    {
-                        server_info.MML_LIC_SRVR_ADDR = std::format(RithimcServerInfo::MML_LIC_SRVR_ADDR_template, value->get());
-                    }
-                    else
-                    {
-                        throw std::runtime_error(std::format("MML_LIC_SRVR_ADDR in {} is not a string.", std::string(key)));
-                    }
-                }
-                else
-                {
-                    throw std::runtime_error(std::format("MML_LIC_SRVR_ADDR not found in {}.", std::string(key)));
-                }
-                if (table->contains("MML_LOC_BROK_ADDR"))
-                {
-                    if (auto value = table->at("MML_LOC_BROK_ADDR").as<std::string>())
-                    {
-                        server_info.MML_LOC_BROK_ADDR = std::format(RithimcServerInfo::MML_LOC_BROK_ADDR_template, value->get());
-                    }
-                    else
-                    {
-                        throw std::runtime_error(std::format("MML_LOC_BROK_ADDR in {} is not a string.", std::string(key)));
-                    }
-                }
-                else
-                {
-                    throw std::runtime_error(std::format("MML_LOC_BROK_ADDR not found in {}.", std::string(key)));
-                }
-                if (table->contains("MML_LOGGER_ADDR"))
-                {
-                    if (auto value = table->at("MML_LOGGER_ADDR").as<std::string>())
-                    {
-                        server_info.MML_LOGGER_ADDR = std::format(RithimcServerInfo::MML_LOGGER_ADDR_template, value->get());
-                    }
-                    else
-                    {
-                        throw std::runtime_error(std::format("MML_LOGGER_ADDR in {} is not a string.", std::string(key)));
-                    }
-                }
-                else
-                {
-                    throw std::runtime_error(std::format("MML_LOGGER_ADDR not found in {}.", std::string(key)));
-                }
-                if (table->contains("MML_LOG_TYPE"))
-                {
-                    if (auto value = table->at("MML_LOG_TYPE").as<std::string>())
-                    {
-                        server_info.MML_LOG_TYPE = std::format(RithimcServerInfo::MML_LOG_TYPE_template, value->get());
-                    }
-                    else
-                    {
-                        throw std::runtime_error(std::format("MML_LOG_TYPE in {} is not a string.", std::string(key)));
-                    }
-                }
-                else
-                {
-                    server_info.MML_LOG_TYPE = "MML_LOG_TYPE=log_net";
-                }
-                if (table->contains("MML_SSL_CLNT_AUTH_FILE"))
-                {
-                    if (auto value = table->at("MML_SSL_CLNT_AUTH_FILE").as<std::string>())
-                    {
-                        server_info.MML_SSL_CLNT_AUTH_FILE = std::format(RithimcServerInfo::MML_SSL_CLNT_AUTH_FILE_template, value->get());
-                    }
-                    else
-                    {
-                        throw std::runtime_error(std::format("MML_SSL_CLNT_AUTH_FILE in {} is not a string.", std::string(key)));
-                    }
-                }
-                else
-                {
-                    server_info.MML_SSL_CLNT_AUTH_FILE = "MML_SSL_CLNT_AUTH_FILE=rithmic_ssl_cert_auth_params";
-                }
-                server_names.push_back(std::string(key));
-                servers.emplace(std::string(key), server_info);
+                RithimcServerInfo info;
+
+                if (params.contains("MML_DMN_SRVR_ADDR"))
+                    info.MML_DMN_SRVR_ADDR = applyTemplate(
+                        RithimcServerInfo::MML_DMN_SRVR_ADDR_template,
+                        params["MML_DMN_SRVR_ADDR"].get<std::string>());
+
+                if (params.contains("MML_DOMAIN_NAME"))
+                    info.MML_DOMAIN_NAME = applyTemplate(
+                        RithimcServerInfo::MML_DOMAIN_NAME_template,
+                        params["MML_DOMAIN_NAME"].get<std::string>());
+
+                if (params.contains("MML_LIC_SRVR_ADDR"))
+                    info.MML_LIC_SRVR_ADDR = applyTemplate(
+                        RithimcServerInfo::MML_LIC_SRVR_ADDR_template,
+                        params["MML_LIC_SRVR_ADDR"].get<std::string>());
+
+                if (params.contains("MML_LOC_BROK_ADDR"))
+                    info.MML_LOC_BROK_ADDR = applyTemplate(
+                        RithimcServerInfo::MML_LOC_BROK_ADDR_template,
+                        params["MML_LOC_BROK_ADDR"].get<std::string>());
+
+                if (params.contains("MML_LOGGER_ADDR"))
+                    info.MML_LOGGER_ADDR = applyTemplate(
+                        RithimcServerInfo::MML_LOGGER_ADDR_template,
+                        params["MML_LOGGER_ADDR"].get<std::string>());
+
+                if (params.contains("MML_LOG_TYPE"))
+                    info.MML_LOG_TYPE = applyTemplate(
+                        RithimcServerInfo::MML_LOG_TYPE_template,
+                        params["MML_LOG_TYPE"].get<std::string>());
+
+                // SSL auth file always present
+                if (params.contains("MML_SSL_CLNT_AUTH_FILE"))
+                    info.MML_SSL_CLNT_AUTH_FILE = applyTemplate(
+                        RithimcServerInfo::MML_SSL_CLNT_AUTH_FILE_template,
+                        params["MML_SSL_CLNT_AUTH_FILE"].get<std::string>());
+
+                // Build the map key: "<system>_<gateway>"
+                std::string key = std::format("{}_{}", system, gateway);
+                servers.emplace(std::move(key), std::move(info));
+                server_gateways[system].emplace_back(std::move(gateway));
             }
         }
     }
-    catch (const toml::parse_error& err)
+    catch (const std::exception& err)
     {
-        SPDLOG_ERROR("Error parsing config file: {}", err.description());
-        throw std::runtime_error(std::format("Failed to parse rithmic_config.toml file. {}", err.description()));
+        SPDLOG_ERROR("Error parsing config: {}", err.what());
+        throw std::runtime_error(std::format("Failed to parse rithmic config. {}", err.what()));
     }
 }
 
-void RithmicSystemConfig::setServer(const std::string& server_name)
+void RithmicSystemConfig::setServer(const std::string& server_gateway)
 {
-    auto it = servers.find(server_name);
+    auto it = servers.find(server_gateway);
     if (it != servers.end())
     {
         env[0] = it->second.MML_DMN_SRVR_ADDR.data();
@@ -146,6 +120,6 @@ void RithmicSystemConfig::setServer(const std::string& server_name)
     }
     else
     {
-        throw std::runtime_error(std::format("Server {} not found in rithimc_config.toml.", server_name));
+        throw std::runtime_error(std::format("Server {} not found in rithimc_config.toml.", server_gateway));
     }
 }

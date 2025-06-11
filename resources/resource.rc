@@ -35,20 +35,22 @@ BEGIN
     CONTROL         "", IDC_OMNE_LOGO, "STATIC", SS_BITMAP, 20, 105, 80, 60
 END
 
-IDD_LOGIN_DIALOG DIALOGEX 0, 0, 300, 200
+IDD_LOGIN_DIALOG DIALOGEX 0, 0, 300, 220
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "R | API+ Login"
 FONT 8, "MS Shell Dlg"
 BEGIN
     CONTROL         "", IDC_RITHMIC_LOGO, "STATIC", SS_BITMAP, 50, 20, 180, 60
     LTEXT           "System:", IDC_SYSTEM_LABEL, 30, 52, 40, 10
-    COMBOBOX        IDC_SERVER_COMBO, 60, 50, 180, 100, CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "The R | API+ software is Copyright (c) 2025 by Rithmic, LLC. All rights reserved.", IDC_COPYRIGHT_RAPI, 20, 80, 260, 10
-    LTEXT           "Trading Platform by Rithmic is a trademark of Rithmic, LLC. All rights reserved.", IDC_COPYRIGHT_RITHMIC, 20, 95, 260, 10
-    LTEXT           "The OMNE software is Copyright (c) 2025 by Omnesys, LLC and Omnesys Technologies, Inc. All rights reserved.", IDC_COPYRIGHT_OMNE, 20, 110, 260, 20
-    LTEXT           "                                                  is a trademark of Omnesys, LLC and Omnesys Technologies, Inc. All rights reserved.", IDC_OMNE_COPYRIGHT, 20, 138, 260, 20
-    CONTROL         "", IDC_OMNE_LOGO, "STATIC", SS_BITMAP, 20, 135, 80, 60
-    DEFPUSHBUTTON   "Login", IDOK, 110, 170, 80, 20
+    COMBOBOX        IDC_SERVER_COMBO, 65, 50, 180, 100, CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Gateway:", IDC_GATEWAY_LABEL, 30, 72, 40, 10
+    COMBOBOX        IDC_GATEWAY_COMBO, 65, 70, 180, 100, CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "The R | API+ software is Copyright (c) 2025 by Rithmic, LLC. All rights reserved.", IDC_COPYRIGHT_RAPI, 20, 100, 260, 10
+    LTEXT           "Trading Platform by Rithmic is a trademark of Rithmic, LLC. All rights reserved.", IDC_COPYRIGHT_RITHMIC, 20, 115, 260, 10
+    LTEXT           "The OMNE software is Copyright (c) 2025 by Omnesys, LLC and Omnesys Technologies, Inc. All rights reserved.", IDC_COPYRIGHT_OMNE, 20, 130, 260, 20
+    LTEXT           "                                                  is a trademark of Omnesys, LLC and Omnesys Technologies, Inc. All rights reserved.", IDC_OMNE_COPYRIGHT, 20, 158, 260, 20
+    CONTROL         "", IDC_OMNE_LOGO, "STATIC", SS_BITMAP, 20, 155, 80, 60
+    DEFPUSHBUTTON   "Login", IDOK, 110, 190, 80, 20
 END
 
 IDD_LOGOS_DIALOG DIALOGEX 0, 0, 190, 25

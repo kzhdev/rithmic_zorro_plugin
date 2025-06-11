@@ -92,15 +92,15 @@ namespace zorro
             return 0;
         }
 
-        auto server = ShowLoginDialog(client_->getServerNames());
-        if (server.empty())
+        auto server_gateway = ShowLoginDialog(client_->getServerGateways());
+        if (server_gateway.empty())
         {
             BrokerError("Login cancelled.");
             shutdown();
             return 0;
         }
 
-        client_->setServer(server);
+        client_->setServer(server_gateway);
 
         std::string err;
         if (!client_->login(Pwd, err))

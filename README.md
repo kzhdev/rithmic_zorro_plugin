@@ -18,7 +18,7 @@ To install the plugin, follow these steps:
 2. Unzip the downloaded file.
 3. Copy the `rithmic.dll` from rithmic_zorro_plugin.zip into the `plugin` folder under Zorro's root path.
 4. Copy the `rithmic.dll` from rithmic_zorro_plugin64.zip into `plugin64` folder under Zorro's root path.
-5. Copy the `rithmic_ssl_cert_auth_params and rithmic_config.toml` into Zorro's root path.
+5. Copy the `rithmic_ssl_cert_auth_params and rithmic.bin` into Zorro's root path.
 
 ## Usage
 
@@ -27,6 +27,7 @@ To use the plugin, follow these steps:
 1. Open Zorro, select Rithmic as the broker.
 2. Enter the **Your Rithmic User ID** in the **User ID** input box.
 3. Enter the **Your Rithmic Password** in the **Password** input box.
+4. Click the Trade button to run your script, select the Rithmic Server and Gateay in the Rithmic Login Dialog.
 
 ## Configuration
 
@@ -35,49 +36,10 @@ The plugin is configured via the `Zorro.ini` or `ZorroFix.ini` file (preferred).
 
 ```ini
 RithmicLogLevel=2     // Optional. 0=TRACE, 1=DEBUG, 2=INFO, 3=WARNING, 4=ERROR, 5=CRITICAL, 6=OFF Default to 2(INFO).
-RithmicConfigPath="path of the rithmic config toml file"    // Optional. Default to "rithmic_config.toml" in Zorro's root folder
 ```
 
 **RithmicLogLevel**: Sets the plugin's logging level. Default to INFO (2).
 
-**RithmicConfigPath**: Specifies the location of the rithmic_config.toml file. Use the full path if not in Zorro's root folder.
-
-### Rithimc Server Configuration
-The `rithmic_config.toml` file, included in the release, defines Rithimic server settings for environments like Rithmic 01, Rithimic Paper Trading and Rithmic Test.
-User can obtain server configuration details from their broker or extract them from the Rithmic Trader Pro log file located at Documents/Rithmic/ (e.g. Rithmic Trader Pro.cur.txt).
-Open the log file in a text editor to find values for server addresses and other parameters (e.g. Domain, Domain Server, License Server, Location Broker, Logger, Log Type, etc.).
-
-The `rithmic_config.toml` file uses the following format:
-```toml
-["Rithmic Server 1"]
-MML_DMN_SRVR_ADDR = "..."
-MML_DOMAIN_NAME = "..."
-MML_LIC_SRVR_ADDR = "..."
-MML_LOC_BROK_ADDR = "...."
-MML_LOGGER_ADDR = "..."
-MML_LOGGER_TYPE = "..."
-MML_SSL_CLNT_AUTH_FILE = "..."
-
-["Rithmic Server 2"]
-MML_DMN_SRVR_ADDR = "..."
-MML_DOMAIN_NAME = "..."
-MML_LIC_SRVR_ADDR = "..."
-MML_LOC_BROK_ADDR = "...."
-MML_LOGGER_ADDR = "..."
-MML_LOGGER_TYPE = "..."
-MML_SSL_CLNT_AUTH_FILE = "..."
-
-......
-
-```
-#### Fields:
-* **MML_DMN_SRVR_ADDR**: Market data server address.
-* **MML_DOMAIN_NAME**: Rithmic domain name.
-* **MML_LIC_SRVR_ADDR**: License server address.
-* **MML_LOC_BROK_ADDR**: Local Broker server address.
-* **MML_LOGGER_ADDR**: Logging server address.
-* **MML_LOG_TYPE**: Logging type. (Optional) Default to log_net.
-* **MML_SSL_CLNT_AUTH_FILE**: Path to the `rithmic_ssl_cert_auth_params` file. Use the full path if not in Zorro's root folder. (Optional) Default to `rithmic_ssl_cert_auth_params`.
 
 ## Assets.csv
 
